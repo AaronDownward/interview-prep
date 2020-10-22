@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    namespace: app
+    name: simple-app
+    labels:
+        app: simple-app
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: simple-app
+    template:
+        metadata:
+            labels:
+                app: simple-app
+        spec:
+            containers:
+            -   name: simple-app
+                image: aarondownward/simple-app
+                imagePullPolicy: Always
+            restartPolicy: Always
