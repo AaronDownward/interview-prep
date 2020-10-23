@@ -27,9 +27,16 @@ pipeline {
         }
         stage('Sonar') {
             steps {
-                withSonarQubeEnv("<Name of SonarQube server>") {
-                    sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.branch.name=\"dev\""
+                withSonarQubeEnv("SonarCloud") {
+                    sh "mvn verify sonar:sonar -Dsonar.branch.name=\"dev\""
                     sleep(10)
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
