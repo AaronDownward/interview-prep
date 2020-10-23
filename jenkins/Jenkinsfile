@@ -1,24 +1,55 @@
 pipeline {
-
     agent any
 
+    tools {
+        maven 'maven'
+    }
+
     stages {
-        stage('Build') {
-            // Run the maven build
+        stage('Pull') {
             steps {
-                echo 'building..'
+                git url: "${githubURL}", branch: "${gitBranch}"
+            }
+        }
+        stage('Checkstyle') {
+            steps {
+                dir("simple-app") {
+                    sh "mvn validate"
+                }
             }
         }
         stage('Test') {
             steps {
-                echo 'testing..'
+                dir("simple-app") {
+                    sh "mvn test -Dcheckstyle.skip=true"
+                }
             }
         }
-        stage('Deploy') {
+        stage('Build') {
             steps {
-                echo 'deploying..'
-                // sh 'false'
+                dir("simple-app") {
+                    sh "mvn package -DskipTests=true -Dcheckstyle.skip=true"
+                }
             }
+        }
+        stage('Upload Docker Image') {
+            steps {
+                script {
+                    dir("simple-app") {
+                        docker.withTool('docker') {
+                            repoId = "aarondownward/simple-app"
+                            image = docker.build(repoId)
+                            docker.withRegistry("https://registry.hub.docker.com", "dockerhub-cred") {
+                                image.push()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage('Rollout deployment')
+        {
+            sh 'kubectl rollout restart deployment/simple-app'
         }
     }
 }
