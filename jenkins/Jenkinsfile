@@ -11,13 +11,6 @@ pipeline {
                 git url: "${githubURL}", branch: "${gitBranch}"
             }
         }
-        stage('Checkstyle') {
-            steps {
-                dir("simple-app") {
-                    sh "mvn validate"
-                }
-            }
-        }
         stage('Test') {
             steps {
                 dir("simple-app") {
