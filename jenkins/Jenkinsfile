@@ -25,6 +25,15 @@ pipeline {
                 }
             }
         }
+        stage('Sonar') {
+            steps {
+                withSonarQubeEnv("<Name of SonarQube server>") {
+                    sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.branch.name=\"dev\""
+                    sleep(10)
+                }
+            }
+        }
+
         stage('Upload Docker Image') {
             steps {
                 script {

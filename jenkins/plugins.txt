@@ -10,3 +10,4 @@ pipeline-model-definition
 pipeline-stage-step
 pipeline-maven
 workflow-aggregator
+sonar
