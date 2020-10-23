@@ -43,7 +43,7 @@ pipeline {
         stage('Rollout deployment')
         {
             steps {
-                sh 'kubectl rollout restart deployment/simple-app'
+                sh 'kubectl rollout restart deployment/simple-app -n app'
             }
         }
     }
