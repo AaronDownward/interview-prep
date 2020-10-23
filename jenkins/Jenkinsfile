@@ -49,7 +49,9 @@ pipeline {
         }
         stage('Rollout deployment')
         {
-            sh 'kubectl rollout restart deployment/simple-app'
+            steps {
+                sh 'kubectl rollout restart deployment/simple-app'
+            }
         }
     }
 }
